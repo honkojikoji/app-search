@@ -1,0 +1,313 @@
+body {
+  padding: 10px;
+  font: 16px ;
+  font-family: 'Times New Roman';
+}
+h1{
+  font: 20px;
+  padding: 0px;
+  margin: 0px;
+  white-space: nowrap;
+}
+a {
+  color: #000;
+  text-decoration: none;
+
+}
+a:hover{
+  color: #0ff;
+  text-decoration: underline;
+}
+
+td {
+  text-align: center;
+}
+
+.maincontainer{
+  z-index: -9999;
+}
+
+.menu_container.main {
+  position: absolute; /* 要素を絶対位置に配置 */
+  top: 50%; /* 上端から50%の位置に配置 */
+  left: 50%; /* 左端から50%の位置に配置 */
+  transform: translate(-50%, -50%); /* 中央揃え */
+  
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;  
+  flex-direction: column; /* 縦方向に並べる */  
+}
+
+.menu_container.sub { 
+  display: flex; /* Flexbox を使用して横並べ */
+  justify-content: flex-start; /* 左詰めで要素を配置 */  
+  flex-wrap: wrap; /* 要素が画面に収まらない場合に折り返す */
+}
+
+.search_container{
+  width: 360px;
+}
+
+.title {
+  font-weight: bold;
+  padding: 0 3em;
+  width: fit-content;
+  margin-left: 10px ;
+  text-align: center;
+  position: relative;
+}
+.title.main:first-letter {
+  font-size: 1.5em;
+  color: #4c9ac0;
+}
+.title.sub{
+  margin-bottom: 10px ;
+}
+
+.title::before, .title::after {
+  content: '';
+  background: #4c9ac0;
+  width: 2em;
+  height: 3px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+}
+.title::before {
+  left: 0;
+}
+.title::after {
+  right: 0;
+}
+
+.search-form-1 {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border: 2px solid #2589d0;
+  border-radius: 15px;  
+  margin-bottom: 10px;
+  width: 340px;
+  text-align: center;
+  margin-left: 7px;
+}
+
+.search-form-1 input {
+  width: 290px;
+  height: 45px;
+  padding: 5px 15px;
+  border: none;
+  box-sizing: border-box;
+  font-size: 18px;
+  outline: none;
+}
+
+.search-form-1 input::placeholder{
+  color: #ababab;
+}
+
+.search-form-1 button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 45px;
+  border: none;
+  background-color: #2589d0;
+  cursor: pointer;
+}
+
+.search-form-1 button::after {
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z' fill='%23fff'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  content: '';
+  transition: transform 0.3s ease; /* ホバー時のトランジションを追加 */
+}
+
+.textcontainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: column; /* 縦方向に並べる */  
+  background-color: #def7ff;
+  width: 300px;
+  padding: 5px 10px;
+  margin-top: 15px;
+  margin-left: 15px;
+  position: relative;
+  box-shadow: 0px 0px 0px 5px  #def7ff;
+  border: dashed 2px white;
+  height: 65px;
+}
+
+.textcontainer:after{
+  position: absolute;
+  content: '';
+  right: -7px;
+  top: -7px;
+  border-width: 0 15px 15px 0;
+  border-style: solid;
+  border-color:  #def7ff #fff  #def7ff;
+  box-shadow: -1px 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+.textrow {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0; /* 上下左右の中央揃え */
+  justify-content: center; /* 左右に中央揃え */
+}
+
+.insert_text {
+  background-color: #def7ff;
+  border: none;
+  font-size: 18px;
+  width: 2rem;    
+  user-select: none; /* テキストの選択を無効化 */
+  transition: color 0.1s; /* 色の変化に1秒かける */
+}
+.insert_text:hover{
+  color: #2589d0;
+}
+
+
+
+/* === フィルタボタン ============================ */
+.tfArea{
+  display    : inline-block;
+  position   : relative;
+}
+.tfImg{
+  display    : inline-block;
+  width      : 8px;
+  height     : 8px;
+  background : #eee;
+  border     : 1px solid #777;
+  margin     : 1px 3px;
+  padding    : 3px;
+  cursor     : pointer;
+}
+/* === フィルタボタン（カーソルオーバー時）======= */
+.tfImg:hover{
+  background : #FFD700;
+}
+/* === フィルタボタン内の画像色（SVG）============ */
+.tfImg path{
+  fill       : #777;
+}
+/* === フィルタリスト ============================ */
+.tfList{
+  display    : inline-block;
+  position   : absolute;
+  max-width  : 250px;
+  min-width  : 140px;
+  background : #fff;
+  border     : 1px solid #777;
+  top        : 15px;
+  left       : 0;
+  line-height: 1.1;
+  font-weight: normal;
+}
+/* === フィルタリスト内のform ==================== */
+.tfList form{
+  max-height : 150px;           /* 縦幅 */
+  overflow   : scroll;
+  overflow   : overflow-y;
+  overflow   : auto;
+}
+/* === フィルタリスト内のチェックボックス ======== */
+.tfMeisai{
+  text-align : left;
+  padding    : 2px;
+}
+/* === フィルタリスト内の文字位置合わせ ========== */
+.tfMeisai label{
+  padding    : 0 10px 0 3px;
+  color : #000;
+}
+/* === OK/CANCELボタン =========================== */
+.tfBtnArea{
+  text-align : center;
+  font-size  : 8pt;
+  padding    : 3px 5px;
+}
+.tfBtnArea input{
+  display    : inline-block;
+  margin     : 0 5px;
+}
+/* === 含むボタンの入力エリア ==================== */
+.tfInStr{
+  padding    : 5px 3px;
+  border-top : 1px solid #999;
+  border-bottom: 1px solid #999;
+}
+.tfInStr input{
+  box-sizing : border-box;
+  width      : 100%;
+  padding    : 1px 3px;
+  font-weight: normal;
+  font-size  : 95%;
+  border     : 1px solid #ccc;
+}
+/* === フィルタ非表示 ============================ */
+#data-table tr[cmanFilterNone]{
+  display    : none;
+}
+/* === フィルタ非表示行と次行の間を二重線にする == */
+#data-table tr[cmanFilterNone] + tr td{
+  border-top : 3px double #777;
+}
+ /* --- （参考）テーブル全体のスタイル指定 ------- */
+#data-table {
+  margin-top     : 20px;
+  width          : 100%;
+  border-collapse: collapse;         /* 境界線結合 */
+  border-spacing : 0;                /* 罫線間余白 */
+  font-size      : 9pt;              /* 文字サイズ */
+}
+ /* --- ヘッダーのスタイル指定 ------------------- */
+#data-table th {
+  text-align    : center;            /* 文字位置   */
+  font-weight   : bold;              /* 太文字     */
+  padding       : 3px 5px;          /* 余白       */
+  border        : 1px #666666 solid; /* 罫線       */
+  background    : #99ccff;           /* 背景色     */
+  white-space   : nowrap;
+}
+ /* --- 明細のスタイル指定 ----------------------- */
+#data-table td {
+  text-align    : center;            /* 文字位置   */
+  padding       : 3px 5px;           /* 余白       */
+  border        : 1px #666666 solid; /* 罫線       */
+  white-space   : nowrap;
+}
+#data-table tr:nth-child(odd) td {
+	background: #dddddd;
+}
+
+.copy_row{
+  display: block;
+  text-decoration: none;
+  max-width: 340px;
+  width: 100%;
+  margin: 0 auto;
+  color:  #2589d0;
+  font-weight: bold;
+  text-align: center;
+  position: relative;
+  border: 2px solid #2589d0;
+}
+.copy_row:hover{
+  background-color: #2589d0;
+  color: #fff;
+}
+.done {
+  background-color: #2589d0;
+  color: #fff;
+}
+

@@ -1,0 +1,113 @@
+.search-list {
+    padding: 50px;
+  }
+  
+  // 検索ボックス
+  .search {
+    border-radius: 5px;
+    width: 300px;
+    padding: 10px;
+  }
+  
+  // フィルター
+  .search-list__filter-types {
+    margin-top: 30px;
+    display: flex;
+  }
+  
+  .search-list__filter-type {
+    & + & {
+      margin-left: 20px;
+      padding-left: 20px;
+      border-left: 1px solid #ccc;
+    }
+  }
+  
+  .search-list__filter-name {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  
+  .search-list__filter-data {
+    &:first-of-type {
+      margin-top: 20px;
+    }
+    
+    & + & {
+      margin-top: 10px;
+    }
+  }
+  
+  // テーブル
+  .search-list__table {
+    margin-top: 40px;
+    width: 100%;
+    table-layout: fixed;
+    
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+    th {
+      font-weight: 700;
+      font-size: 18px;
+      
+      &.sort {
+        cursor: pointer;
+        
+        &.desc::after {
+          content: "▼";
+          margin-left: 10px;
+          font-size: 16px;
+        }
+        
+        &.asc::after {
+          content: "▲";
+          margin-left: 10px;
+          font-size: 16px;
+        }
+      }
+    }
+  }
+  
+  // ページネーション
+  .search-list__pagination {
+    margin-top: 30px;
+    text-align: center;
+  }
+  
+  .search-list__pagination-items {
+    display: inline-flex;
+    list-style: none;
+    
+    li {
+      border: 1px solid #ccc;
+      
+      a {
+          display: block;
+          padding: 10px 12px;
+          text-decoration: none;
+          color: #000;
+          transition: all .3s ease 0s;
+  
+          @media (any-hover: hover) {
+              &:hover {
+                  background-color: #000;
+                  color: #fff;
+              }
+          }
+       }
+      
+        &.active {
+          a {
+            background-color: #000;
+            color: #fff;
+          }
+        }
+    }
+    
+    li + li {
+      margin-left: 20px;
+    }
+  }

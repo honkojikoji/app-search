@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Redirect and Populate Input</title>
+</head>
+<body>
+    <!-- ボタンをクリックするとリダイレクトと入力を行う -->
+    <button onclick="redirectToInput()">リダイレクトと入力</button>
+    <iframe id='myFrame' src="https://www.manduuka.net/sanskrit/w/dic.cgi" ></iframe>
+    <script>
+      window.onload = function() {
+          // iframe要素を取得
+          var iframe = document.getElementById('myFrame');
+          
+          // iframe内のwindowオブジェクトを取得
+          var iframeWindow = iframe.contentWindow;
+          
+          // iframe内のdocumentオブジェクトを取得
+          var iframeDocument = iframeWindow.document;
+          
+          // iframe内のDOM要素を取得
+          var innerElement = iframeDocument.querySelector('input[name=kw]');
+          
+          // 取得したinput要素に値を設定する例
+          if (inputElement) {
+                inputElement.value = 'ここに入力したい文字列';
+          }
+          console.log(innerElement)
+      };
+  </script>
+</body>
+</html>

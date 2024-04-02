@@ -1,0 +1,170 @@
+    const array_consonant = ['tb=nj', 'tb=nc', 'tb=nt'];
+    // 少なくとも一つ以上の要素を含むかどうかを判定
+    const includesAny = array_consonant.some(element => url.includes(element));
+
+
+
+
+
+          if((url.includes('bm=ht') && !(url.includes('ht3'))) || tableIndex == 1){
+        startRow = 3;
+      }else{
+        startRow = 4;
+      }
+      let root_text = h2Text.match(/-(.*)/);
+      if(h2Text.includes('-')){
+        root = root_text[1].replace(' ','');
+      }else{
+        root = h2Text;
+        flg_alltext = true;
+      }
+      
+      if(url.includes('bm=ac')){
+        flg_stem = true;
+      }
+      if(url == 'https://www.manduuka.net/sanskrit/p/pdisp.cgi?tb=nt&bm=atd'){
+        flg_stem = true;
+      }
+      const regex = /(.*?)-/g;
+      let title;
+      if(url.includes('bm=t')){
+        title = await page.$eval(`table:nth-child(2) > tbody > tr:nth-child(2) > td:first-child`, node => node.textContent.trim());
+      }else{
+        title = await page.$eval(`table:nth-child(2) > tbody > tr:first-child > td:first-child`, node => node.textContent.trim());
+      }
+      
+      titletext = title.match(regex)[0].replace(/-/g, '').replace(/ /g, '');
+      if(root.includes('（語幹子音有気化）')){
+        root = 'u' + root.replace('（語幹子音有気化）', ''); // カッコとその中身を削除;
+        flg_unique_nj = true;
+      }else if(h2Text.includes('語幹')){
+        const regex = /-(.*?)(?=\()/g;
+        root = h2Text.match(regex)[0].replace(/-/g, '').replace(/ /g, '');
+      }else if(root.includes('(')){
+        const regex = /-(.*?)(?: |(?=()))/g;
+        root = h2Text.match(regex)[0].replace(/-/g, '').replace(/ /g, '');
+        console.log(root)
+      }
+
+
+
+      
+        if(includesAny){
+          if(column < 5){
+            if(url.includes('bm=ht')){
+              if(!(url.includes('ht3'))){
+                gender = '女性';
+              }
+            }else{
+              if(tableCount == 1){
+                gender = '男性女性';                
+              }
+            }
+          }else{
+            gender = '中性';
+          }
+        }
+
+
+else if(includesAny){
+            if(flg_unique == false || elementExists_yellow == true){
+              if (htmlContent[index].includes('<font color="red">') && flg_alltext == false) {
+                // `<font color="red">`が含まれる場合
+                const regexPattern = />(.*?)</g;
+                match_text = htmlContent[index].match(regexPattern)[0].replace(/</g, '').replace(/>/g, '');
+                const matches = htmlContent[index].match(/<font color="red">(.*?)<\/font>/g);
+                if (matches) {
+                  if (matches.length >= 2) {
+                    if(flg_stem == true){
+                      for(let content of htmlContent[index].split('<br>')){
+                        redTexts.push(content.replace('<font color="red">','').replace('</font>','').replace('pr','').replace('<br>',''));
+                      }
+                    }else{
+                      // 一度目の<font color="red">と</font>の間にある文字列を抽出
+                      const textBetweenFirstRed = matches[0].replace(/<\/font>/g, '').replace(/<font color="red">/g, '');
+                      // </font>と<font color="red">の間にある文字列を抽出
+                      const textBetweenFonts = htmlContent[index].match(/<\/font>(.*?)<font color="red">/)[1];
+                      // 二度目の<font color="red">と</font>の間にある文字列を抽出
+                      const secondTextBetweenReds = matches.length >= 2 ? matches[1].match(/<font color="red">(.*?)<\/font>/)[1] : '';
+                      redTexts.push(textBetweenFirstRed + textBetweenFonts + secondTextBetweenReds); // 抽出された文字列を配列に追加
+                    }
+                  } else if (matches.length === 1) {
+                    let n = root.length;
+                    // 一度目の<font color="red">の前にある文字列を抽出
+                    let firstCharBeforeRed = htmlContent[index].match(new RegExp(`.{0,${n}}(?=<font color="red">)`));
+                    // 一度目の<font color="red">と</font>の間にある文字列を抽出
+                    const textBetweenFirstRed = matches[0].replace(/<\/font>/g, '').replace(/<font color="red">/g, '');
+                    const toptext = firstCharBeforeRed[0].charAt(0);
+                    if(flg_unique == true && toptext != 'h'){
+                      firstCharBeforeRed = 'h' + firstCharBeforeRed;
+                    }
+                    if(flg_stem = true){
+                      let pushtext = htmlContent[index].replace('<font color="red">','').replace('</font>','').replace('<br>','');
+                      if(url.includes('bm=ac3')){
+                        if(elementExists_aqua){
+                          redTexts.push(pushtext.replace('praty',''));
+                          remark = '中語幹ac';
+                        }else if(elementExists_yellow){
+                          redTexts.push(pushtext.replace('praty',''));
+                          remark = '強語幹añc';
+                        }else{
+                          redTexts.push(pushtext.replace('pratī',''));
+                          remark = '弱語幹c';
+                        }
+                      }else if(elementExists_yellow){
+                        redTexts.push('a' + pushtext.replace('prā',''));
+                        remark = '強語幹añc';
+                      }else{
+                        redTexts.push('a' + pushtext.replace('prā',''));
+                        remark = '中語幹ac';
+                      }
+                    }else{
+                      redTexts.push(firstCharBeforeRed + textBetweenFirstRed); // 抽出された文字列を配列に追加
+                    }
+                  }
+                }
+              }else{
+                const match = url.slice(-3).charAt(0);
+                if(match.charAt(0) == '=' && match.includes('h')){
+                  redTexts.push(htmlContent[index].slice(-1)); // 後ろから三文字を抽出して配列に追加
+                }else{
+                  let pushtext = htmlContent[index].slice(-(root.length));
+                  if(flg_stem = true || flg_alltext == true){
+                    if(pushtext.charAt(0) == 'ā'){
+                      pushtext = pushtext.replace('ā','a');
+                    }
+                    if(url.includes('vis2vac') || url.includes('tiryac')){
+                      pushtext = htmlContent[index].replace(/<font color="red">/g, '').replace(/<\/font>/g, '')
+                    }
+                    if(elementExists_aqua){
+                      remark = '中語幹ac';
+                    }else if(elementExists_yellow){
+                      remark = '強語幹añc';
+                    }else{
+                      remark = '弱語幹c';
+                    }
+                  }
+                  redTexts.push(pushtext); // 後ろから三文字を抽出して配列に追加
+                }
+              }
+            }
+          }
+
+
+           // tobody下の最初のtr要素のHTMLを取得
+  const trfirstchild = await page.$eval('tbody > tr:first-child', element => element.innerHTML);
+   if(url == 'https://www.manduuka.net/sanskrit/p/pdisp.cgi?tb=nt&bm=at'){
+    tableCount = tableCount - 1;
+  }
+
+
+            const elementExists_yellow = await page.evaluate((selector) => {
+            const element = document.querySelector(selector);
+            
+            return element ? element.getAttribute('bgcolor') === 'aqua' : false;
+          }, selector);
+          const elementExists_aqua = await page.evaluate((selector) => {
+            const element = document.querySelector(selector);
+            
+            return element ? element.getAttribute('bgcolor') === 'aqua' : false;
+          }, selector);

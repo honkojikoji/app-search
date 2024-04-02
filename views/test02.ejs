@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Page</title>
+</head>
+<body>
+
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <td>id</td>
+          <td>name</td>
+          <td>score</td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>a</td>
+          <td>31</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>b</td>
+          <td>64</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>c</td>
+          <td>63</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script>
+// ページが読み込まれたときに自動で関数を実行する
+document.addEventListener('DOMContentLoaded', function() {
+    // テーブルのtbody要素を取得
+    var tbody = document.querySelector('#dataTable tbody');
+
+    // tbody内の各tr要素を反復処理
+    tbody.querySelectorAll('tr').forEach(function(tr, index) {
+        // 各tr要素の二番目のtd要素を取得し、その中のテキストをキーワードとする
+        var keyword = tr.querySelector('td:nth-child(2)').textContent;
+
+        // キーワードをコンソールに表示
+        console.log('Keyword:', keyword);
+
+        // 1秒待機してから次の要素に移る
+        setTimeout(function() {
+            // Fetch APIを使用してサーバーにPOSTリクエストを送信
+            fetch('/test02/scrape', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ keyword: keyword })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data);
+
+                // レスポンスデータから inputValue を取得
+                var inputValue = data.inputValue;
+
+                // 取得したデータをリンクとして td タグ内に表示する
+                var tdElement = tr.querySelector('td:nth-child(4)'); // 二番目のtd要素を取得
+                var linkElement = document.createElement('a');
+                linkElement.setAttribute('href', '../../javascripts//pdfjs-embed-viewer/web/荻原雲来『梵和大辞典』.pdf');
+                linkElement.textContent = inputValue; // inputValueをリンクのテキストとして設定
+                tdElement.innerHTML = ''; // td内の文字列を除去
+                tdElement.appendChild(linkElement); // a要素をtd内に追加
+
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+        }, index * 2000); // インデックスに応じて1秒ごとに処理を実行
+    });
+});
+
+    </script>
+</body>
+</html>

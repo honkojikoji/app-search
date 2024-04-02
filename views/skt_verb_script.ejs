@@ -1,0 +1,423 @@
+
+<%
+	verb=[1];
+	all_vowel = ['i', 'ī', 'u', 'ū', 'ṛ', 'ṝ', 'ḷ', 'a', 'e', 'o', 'ā']
+	vowels = [
+		['a'],
+		['i', 'ī'],
+		['u', 'ū'],
+		['ṛ', 'ṝ'],
+		['ḷ']
+	]
+	sibilant = ['ś','s','ṣ'];
+	pb  = ['p', 'b', 'm'];
+	guna = ['a', 'e', 'o', 'ar', 'al'];
+	vrddhi = ['ā', 'ai', 'au', 'ār'];
+	vrddhi_before_vowel = ['ā', 'ā', 'āv', 'ār'];
+	kg =  ['k', 'g', 'ṅ'];
+	cj =  ['c', 'j', 'ñ', 'ś'];
+	td =  ['t', 'd', 'n', 's'];
+	td2 = ['ṭ', 'ḍ', 'ṇ', 'ṣ'];
+	pb  = ['p', 'b', 'm'];
+	nasal =['ṅ', 'ñ', 'n', 'ṇ', 'm', 'ṃ']
+	future = ['syā','sya','sy','ṣyā','ṣya','ṣy']
+	tableContents = [];
+	replacements = {
+   	 'ā': 'aa',
+   	 'ī': 'ii',
+   	 'ū': 'uu'
+   	 // Add other replacements here if needed
+    };
+	// 語尾が guna 配列のいずれかに該当するかどうかを判定する関数
+	const isMatch = (input) => {
+	return guna.some(item => input.endsWith(item));
+	};
+	// パターンと置換文字列を逆にしたオブジェクトを生成
+	reverseReplacements = {};
+	for (let pattern in replacements) {
+		reverseReplacements[replacements[pattern]] = pattern;
+	}
+	function replaceCharacters(inputString) {
+    let outputString = inputString;
+
+		for (let pattern in replacements) {
+			let replacement = replacements[pattern];
+			let regex = new RegExp(pattern, 'g');
+			outputString = outputString.replace(regex, replacement);
+		}
+
+		return outputString;
+	}
+	function restoreCharacters(inputString) {
+		let outputString = inputString;
+
+		for (let pattern in reverseReplacements) {
+			let replacement = reverseReplacements[pattern];
+			let regex = new RegExp(pattern, 'g');
+			outputString = outputString.replace(regex, replacement);
+		}
+
+		return outputString;
+	}
+	for (var j = 0; j < content.length; j++) {
+		var obj = content[j];
+		if(obj.word_class=='動詞'){
+			// 文字列の長さを取得
+			var title_length = title.length;
+			var ending_length = obj.ending_pattern.length;
+			var root;
+			var roots = [];
+			if(title.endsWith(obj.ending_pattern)){
+				root = title.slice(0, -ending_length);
+				roots.push(root);
+			}else{
+				root = title.slice(0, -ending_length) + 'a';
+				roots.push(root);
+				root = title.slice(0, -ending_length) + 'ā';
+				roots.push(root);
+			}
+			// 最後の文字を取得
+			var lastChar = title[root.length -1];
+			var target_vowel = '';
+			if(obj.remark.includes('√')){
+ 				var base = root + obj.remark.slice(0, obj.remark.indexOf('(')); // (よりも前の部分を切り取る ;
+				// 新しいオブジェクトを作成して、それに base と remark を設定する
+				var headIndex=obj.remark.lastIndexOf('(');
+				var taleIndex=obj.remark.lastIndexOf(')');	
+				let newObj = Object.assign({}, obj, { base: base, remark: obj.remark.slice(headIndex + 1, taleIndex), ending_pattern: obj.ending_pattern+'(完全一致)' });
+				tableContents.push(newObj);	 
+			}
+
+			var past = '';
+
+			if(obj.root_or_mood == '第二次語尾'){
+				var len = roots.length;
+				for (let i = 0; i < len; i++){
+					var base = '';
+					if(roots[i].charAt(0) == 'a'){
+						base = '√' + roots[i].substring(1);
+						roots.push(roots[i].substring(1))
+					}else if(root[i].charAt(0) == 'ā'){
+						base = '√a' + roots[i].substring(1);
+						roots.push(roots[i].substring(1))
+					}
+					if(base.length > 0){
+						// 新しいオブジェクトを作成して、それに base と remark を設定する
+						let newObj = Object.assign({}, obj, { base: base, root_or_mood: '単純アオリスト'});
+						tableContents.push(newObj);
+					}
+				}
+			}
+			
+			for(var root of roots){
+				if(obj.remark == '第一種活用'){	
+					//第1類　強語幹
+					for (let target_vowel of guna){						
+						if(root.endsWith(target_vowel)) {
+							
+							var index = guna.indexOf(target_vowel);					
+							for (let vowel of vowels[index]){
+								var base = '√' + root.slice(0, -target_vowel.length) + vowel;
+								// 新しいオブジェクトを作成して、それに base と remark を設定する
+								let newObj = Object.assign({}, obj, { base: base, remark: '第1類' });
+								tableContents.push(newObj);
+							}
+							
+						}
+					}
+
+					//第6類　弱語幹
+					if (!isMatch(root)){
+						var base = '√' + root;
+						// 新しいオブジェクトを作成して、それに base と remark を設定する
+						let newObj = Object.assign({}, obj, { base: base, remark: '第6類' });
+						tableContents.push(newObj);
+					}
+
+					//第4類　y
+					if(root.endsWith('y')){
+						var base = '√' + root.slice(0, -1);
+						// 新しいオブジェクトを作成して、それに base と remark を設定する
+						let newObj = Object.assign({}, obj, { base: base, remark: '第4類' });
+						tableContents.push(newObj);
+					}
+					//第10類　ay
+					if(root.endsWith('ay')){
+						var root_guna = root.slice(0, -3);
+						var root_vrddhi = root.slice(0, -2);
+						for (let target_vowel of vrddhi_before_vowel){
+							if(root_vrddhi.endsWith(target_vowel)){
+								var index = vrddhi_before_vowel.indexOf(target_vowel);
+								for (let vowel of vowels[index]){
+									var base = '√' + root_vrddhi.slice(0, -target_vowel.length) + vowel;
+									// 新しいオブジェクトを作成して、それに base と remark を設定する
+									let newObj = Object.assign({}, obj, { base: base, remark: '第10類' });
+									tableContents.push(newObj);								
+								}
+								
+							}
+						}
+						for (let target_vowel of guna){
+							if(root_guna.endsWith(target_vowel)){
+								var index = guna.indexOf(target_vowel);				
+								for (let vowel of vowels[index]){
+									var base = '√' + root_guna.slice(0, -target_vowel.length) + vowel + root.slice(-3, -2);
+									// 新しいオブジェクトを作成して、それに base と remark を設定する
+									let newObj = Object.assign({}, obj, { base: base, remark: '第10類' });
+									tableContents.push(newObj);								
+								}
+								
+							}
+						}
+					}
+				}else if(obj.remark == '第二種活用'){
+					if((obj.case_or_voice == '能動態' && (obj.root_or_mood == '第一次語尾' || obj.root_or_mood == '第二次語尾') && obj.number == '単') || (obj.case_or_voice == '能動態' &&  obj.root_or_mood == '命令法' && obj.number == '単' && obj.gender_or_person == '3人称') || (obj.root_or_mood == '命令法' && obj.gender_or_person == '1人称')){
+						
+				
+						for (let target_vowel of guna){			
+							if(root.includes(target_vowel)){
+								var index = guna.indexOf(target_vowel);	
+								for (let vowel of vowels[index]) {				
+									// 第2類
+									let base2 = '√' + root.replace(target_vowel, vowel);
+									let newObj2 = Object.assign({}, obj, { base: base2, remark: '第2類' });
+									tableContents.push(newObj2);
+									// 第3類
+									let test_root = root.replace(target_vowel, vowels[index][0]);
+									
+									// 文字列を1文字ずつ配列化して取り出す
+									let charsArray = Array.from(test_root);
+									let second_consonant;
+									let second_vowel = 'default';
+									if(charsArray.length > 3){
+										if(sibilant.includes(charsArray[2])){
+											second_consonant = charsArray[3];
+											if(charsArray.length > 4){
+												if(charsArray[4] == 'h'){
+													if(charsArray.length > 5){
+													second_vowel = charsArray[5];
+													}
+												}else{
+													second_vowel = charsArray[4];
+												}
+											}
+										}else{
+											second_consonant = charsArray[2];
+											if(charsArray[3] == 'h'){
+												if(charsArray.length > 4){
+												second_vowel = charsArray[4];
+												}
+											}else{
+												second_vowel = charsArray[3];
+											}
+										}				
+									}
+									if(second_vowel != 'default'){
+										if(test_root.endsWith(second_vowel)){
+											if(second_consonant == 'k'){
+												second_consonant = 'c';
+											}else if(second_consonant == 'g' || second_consonant == 'h'){
+												second_consonant = 'j'
+											}
+											if(index == 3){
+												second_vowel = 'i'
+											}
+											if(second_consonant == charsArray[0] && second_vowel == charsArray[1]){
+												let base3 = '√' +  root.substring(2).replace(target_vowel, vowel);
+												let newObj3 = Object.assign({}, obj, { base: base3, remark: '第3類' });
+												tableContents.push(newObj3);
+											}
+										}
+									}								
+								}
+							}
+						}
+						//第5類	
+						if (root.endsWith('no')) {
+							let base5 = '√' + root.slice(0, -2);
+							let newObj5 = Object.assign({}, obj, { base: base5, remark: '第5類' });
+							tableContents.push(newObj5);
+						}
+						//第7類
+						let test_root;
+						let dist;
+						if(root.endsWith('h')){
+							dist = 2;
+						}else{
+							dist = 1;
+						}
+						test_root = root.slice(0, -dist);
+						if(test_root.endsWith('na') || test_root.endsWith('ṇa')){
+							let base7 = '√' + test_root.slice(0, -2) + root.replace(test_root,'');
+							let newObj7 = Object.assign({}, obj, { base: base7, remark: '第7類' });
+							tableContents.push(newObj7);
+						}
+						//第9類
+						if(root.endsWith('nā')){
+						let base9 = '√' + root.slice(0, -2);
+						let newObj9 = Object.assign({}, obj, { base: base9, remark: '第9類' });
+						tableContents.push(newObj9);
+						}
+					}else{
+						//第2類
+						let base2 = '√' + root;
+						// 新しいオブジェクトを作成して、それに base と remark を設定する
+						let newObj2 = Object.assign({}, obj, { base: base2, remark: '第2類' });
+						tableContents.push(newObj2);	
+						// 第3類
+						let test_root = 'default';
+						for(var index = 0; index < vowels.length; index++){
+							for(let vowel of vowels[index]){
+								if(root.endsWith(vowel)){
+									test_root = root.slice(0, -1) + vowel[0];
+								}
+							}
+						}					
+						// 文字列を配列化して取り出す
+						if(test_root != 'default'){
+							let charsArray = Array.from(test_root);
+							let second_consonant;
+							let second_vowel = 'default';
+							if(charsArray.length > 3){
+								if(sibilant.includes(charsArray[2])){
+									second_consonant = charsArray[3];
+									if(charsArray.length > 4){
+										if(charsArray[4] == 'h'){
+											if(charsArray.length > 5){
+											second_vowel = charsArray[5];
+											}
+										}else{
+											second_vowel = charsArray[4];
+										}
+									}
+								}else{
+									second_consonant = charsArray[2];
+									if(charsArray[3] == 'h'){
+										if(charsArray.length > 4){
+										second_vowel = charsArray[4];
+										}
+									}else{
+										second_vowel = charsArray[3];
+									}
+								}				
+							}
+							if(second_vowel != 'default'){
+								if(test_root.endsWith(second_vowel)){
+									if(second_consonant == 'k'){
+										second_consonant = 'c';
+									}else if(second_consonant == 'g' || second_consonant == 'h'){
+										second_consonant = 'j'
+									}
+									if(second_vowel == 'ṛ'){
+										second_vowel = 'i'
+									}
+									if(second_consonant == charsArray[0] && second_vowel == charsArray[1]){
+										let base3 = '√' + root.substring(2);
+										let newObj3 = Object.assign({}, obj, { base: base3, remark: '第3類' });
+										tableContents.push(newObj3);
+									}
+								}  
+							}	
+						}
+						
+						//第5類	
+						if(root.endsWith('nu')){
+							let base = '√' + root.slice(0, -2);
+							// 新しいオブジェクトを作成して、それに base と remark を設定する
+							let newObj = Object.assign({}, obj, { base: base, remark: '第5類' });
+							tableContents.push(newObj);	
+						}else if (root.endsWith('n')) {
+							let test = root.slice(-2, -1);
+							if (all_vowel.includes(test)) {
+								let base5 = '√' + root.slice(0, -1);
+								let newObj5 = Object.assign({}, obj, { base: base5, remark: '第5類' });
+								tableContents.push(newObj5);
+							}
+						}else if (root.endsWith('nuv')) {
+							let test = root.slice(-4, -3);
+							if (!all_vowel.includes(test) && all_vowel.includes(obj.ending_pattern.charAt(0))) {
+								let base5 = '√' + root.slice(0, -3);
+								let newObj5 = Object.assign({}, obj, { base: base5, remark: '第5類' });
+								tableContents.push(newObj5);
+							}
+						}
+						//第7類
+						let dist;
+						if(root.endsWith('h')){
+							dist = 2;
+						}else{
+							dist = 1;
+						}
+						test_root = root.slice(0, -dist);
+						for(let nas of nasal){
+							if(test_root.endsWith(nas)){
+							let base7 = '√' + test_root.slice(0, -1) + root.replace(test_root,'');
+							let newObj7 = Object.assign({}, obj, { base: base7, remark: '第7類' });
+							tableContents.push(newObj7);
+							}	
+						}
+						//第9類
+						if(root.endsWith('nī')){
+						let base9 = '√' + root.slice(0, -2);
+						let newObj9 = Object.assign({}, obj, { base: base9, remark: '第9類' });
+						tableContents.push(newObj9);
+						}
+					}
+				}
+				for(var fut of future){
+					if(root.endsWith(fut)){
+						let base = '√' + root.slice(0, -fut.length);
+						let newObj = Object.assign({}, obj, { base: base, remark: '',root_or_mood: '未来' });
+						tableContents.push(newObj);
+						if(root.charAt(0) == 'a'){
+							let basej = '√' + root.substring(1).slice(0, -fut.length);
+							let newObjj = Object.assign({}, obj, { base: basej, remark: '',root_or_mood: '条件法' });
+							tableContents.push(newObjj);
+						}else if(root.charAt(0) == 'ā'){
+							let basej = '√a' + root.substring(1).slice(0, -fut.length);
+							let newObjj = Object.assign({}, obj, { base: basej, remark: '',root_or_mood: '条件法' });
+							tableContents.push(newObjj);
+						}
+					}
+				}
+			}
+		}
+	}
+	var max = tableContents.length;
+	
+	for(var i = 0; i < max; i++){
+		var obj = tableContents[i];
+		if(obj.root_or_mood == '第二次語尾' && (title.charAt(0) == 'a' || title.charAt(0) == 'ā') && obj.base.charAt(1) != 'a' && obj.base.charAt(1) != 'ā' ){
+			tableContents[i].root_or_mood = '過去';
+		}
+	}
+	// 新しい配列を定義
+	bases = [];
+	// tableContentsの各要素に対してbaseを計算し、新しい配列に追加する
+	for(var i = 0; i < tableContents.length; i++) {
+		var obj = tableContents[i];
+		// 正規表現を使用してtitleから語尾を削除し、obj.root_or_moodを追加してoriginを計算
+		var endTextRegex = new RegExp(obj.ending_pattern + '$');
+		var base;
+		if(!obj.base.includes('エラー')){
+			if(obj.root_or_mood == '第一次語尾' || obj.root_or_mood == '現在'){
+				obj.root_or_mood = '直説法'
+			}
+			if(obj.word_class == '動詞'){
+			obj.base = restoreCharacters(obj.base); 				
+			}else{
+				obj.base = title.replace(endTextRegex, '') + obj.root_or_mood;
+			}
+			
+			// basesにbaseが存在しない場合のみ追加する
+			if (!bases.includes(obj.base)) {
+				bases.push(obj.base);		
+			}
+		}
+	}
+	
+	// basesを短い順にソートする
+	bases.sort(function(a, b) {
+	return a.length - b.length;
+	});
+%>

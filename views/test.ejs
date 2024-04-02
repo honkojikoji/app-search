@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="js">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sanskrit</title>
+    <link rel="stylesheet" href="../../stylesheets/style.css">
+    <script src="../../javascripts/script.js"></script>
+</head>
+
+<body>
+    <div class="maincontainer">
+        
+        <% if (flg == false) { %>
+        <div class="menu_container main">
+        <% }else{ %>
+        <div class="menu_container sub">
+        <% } %>
+        <div class="search_container">
+            <% if (flg == false) { %>
+            <h1 class="title main" style="left: -25px;"><%= title %></h1>
+            <% }else{ %>
+            <h1 class="title sub"><%= title %></h1>
+            <% } %>
+
+            <form method="get" action="/test/search" class="search-form-1">
+                <label for="search">
+                    <input type="text" size="25"  name="test_search" id="search" placeholder="キーワード検索">
+                </label>
+                <button type="submit" aria-label="検索" class="search-btn"></button>
+            </form>
+        </div>
+            <div class="textcontainer">
+                <div class="textrow">
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ā</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ī</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ū</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ṛ</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ṝ</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ḷ</button></div>    
+                </div>
+                <div class="textrow">
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ṭ</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ḍ</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ṇ</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ñ</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ṅ</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ṣ</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ś</button></div>  
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ḥ</button></div>
+                  <div class="roman_text"><button onclick="insertText(this)" class="insert_text" >ṃ</button></div>
+                </div>
+             </div>
+        </div>
+        
+        <% if (flg == false) { %>
+
+        <% } else { %>
+
+        <%- include("skt_verb_script.ejs") %>
+        <table id='data-table'>
+            <!-- テーブルのヘッダー行 -->
+            <thead>
+              <tr>
+                
+                <th              ><a href="" onclick="table_sort.exec('data-table',0,'num');return false;">id     </a></th>
+                <th cmanFilterBtn><a href="" onclick="table_sort.exec('data-table',1,'skt');return false;">原型   </a></th>
+                <th cmanFilterBtn><a href="" onclick="table_sort.exec('data-table',2,'str');return false;">品詞   </a></th>
+                <th cmanFilterBtn><a href="" onclick="table_sort.exec('data-table',3,'str');return false;">語根/法</a></th>
+                <th cmanFilterBtn><a href="" onclick="table_sort.exec('data-table',4,'str');return false;">性/人称</a></th>
+                <th cmanFilterBtn><a href="" onclick="table_sort.exec('data-table',5,'str');return false;">数     </a></th>
+                <th cmanFilterBtn><a href="" onclick="table_sort.exec('data-table',6,'str');return false;">格/態  </a></th>
+                <th cmanFilterBtn><a href="" onclick="table_sort.exec('data-table',7,'str');return false;">語尾   </a></th>
+                <th cmanFilterBtn><a href="" onclick="table_sort.exec('data-table',8,'str');return false;">備考   </a></th>
+              </tr>
+            </thead>
+            <tbody>
+            <%
+            for (var i = 0; i < bases.length; i++) {
+                var base = bases[i];
+                for (var j = 0; j < tableContents.length; j++) {
+                var obj = tableContents[j]
+                
+
+                if(obj.base == base){
+                  if(obj.word_class=='動詞'){
+                    
+                    %>
+            
+                <tr>
+                    <td class="id"><%= obj.id %></td>
+                    <td class="base"><a href="<%= obj.url %>"  target="_blank"><%= obj.base %></a></td>
+                    <td class="word_class"><%= obj.word_class %></td>
+                    <td class="root_or_mood"><a href="<%= obj.url %>"  target="_blank"><%= obj.root_or_mood %></a></td>                   
+                    <td class="gender_or_person"><%= obj.gender_or_person %></td>
+                    <td class="number"><%= obj.number %></td>
+                    <td class="case_or_voice"><%= obj.case_or_voice %></td>
+                    <td class="ending_pattern"><%= obj.ending_pattern %></td>
+                    <td class="remark"><%= obj.remark %></td>
+                    <td class="copy_td" style="border: none; background: none; z-index: -100; "><button onclick="copyText(this)" class="copy_row" >copy!</button></td>
+                </tr>
+                    <%
+                  }
+                }
+              }
+            }
+            %>
+          </tbody>
+        </table>
+    <% } %>
+    </div>
+    <script>
+      var verb = '<%= verb %>';
+      console.log(verb)
+
+
+    </script>
+</body>
+
+</html>
